@@ -7,6 +7,7 @@ import (
 
 	"github.com/kelseyhightower/envconfig"
 
+	"github.com/oke11o/gqlgen-sqlc-example/dataloaders"
 	"github.com/oke11o/gqlgen-sqlc-example/gqlgen"
 	"github.com/oke11o/gqlgen-sqlc-example/pg"
 )
@@ -37,10 +38,15 @@ func main() {
 	// initialize the repository
 	repo := pg.NewRepository(db)
 
+	// initialize the dataloaders
+	dl := dataloaders.NewRetriever()
+
 	// configure the server
 	mux := http.NewServeMux()
 	mux.Handle("/", gqlgen.NewPlaygroundHandler("/query"))
-	mux.Handle("/query", gqlgen.NewHandler(repo))
+	dlMiddleware := dataloaders.Middleware(repo)
+	queryHandler := gqlgen.NewHandler(repo, dl)
+	mux.Handle("/query", dlMiddleware(queryHandler))
 
 	// run the server
 	port := ":8080"
