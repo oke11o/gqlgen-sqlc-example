@@ -90,3 +90,26 @@ func (r *queryResolver) Book(ctx context.Context, id int64) (*Book, error) {
 func (r *queryResolver) Books(ctx context.Context) ([]Book, error) {
 	panic("not implemented")
 }
+
+type authorResolver struct{ *Resolver }
+
+func (r *authorResolver) Website(ctx context.Context, obj *pg.Author) (*string, error) {
+	var w string
+	if obj.Website.Valid {
+		w = obj.Website.String
+		return &w, nil
+	}
+	return nil, nil
+}
+
+func (r *authorResolver) Agent(ctx context.Context, obj *pg.Author) (Agent, error) {
+	agent, err := r.Repository.GetAgent(ctx, obj.AgentID)
+	if err != nil {
+		return nil, err
+	}
+	return &agent, nil
+}
+
+func (r *authorResolver) Books(ctx context.Context, obj *pg.Author) ([]Book, error) {
+	return r.Repository.ListBooksByAuthorID(ctx, obj.ID)
+}

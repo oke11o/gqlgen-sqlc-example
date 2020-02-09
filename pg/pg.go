@@ -31,6 +31,7 @@ type Repository interface {
 	DeleteBook(ctx context.Context, id int64) (Book, error)
 	GetBook(ctx context.Context, id int64) (Book, error)
 	ListBooks(ctx context.Context) ([]Book, error)
+	ListBooksByAuthorID(ctx context.Context, id int64) ([]Book, error)
 }
 
 // Open opens a database specified by the data source name.
