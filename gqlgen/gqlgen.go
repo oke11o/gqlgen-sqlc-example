@@ -1,10 +1,11 @@
 package gqlgen
 
 import (
-	"github.com/oke11o/gqlgen-sqlc-example/pg"
 	"net/http"
 
 	"github.com/99designs/gqlgen/handler"
+
+	"github.com/oke11o/gqlgen-sqlc-example/pg"
 )
 
 // NewHandler returns a new graphql endpoint handler.

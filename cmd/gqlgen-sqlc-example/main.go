@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
+
 	"github.com/oke11o/gqlgen-sqlc-example/gqlgen"
 	"github.com/oke11o/gqlgen-sqlc-example/pg"
 )

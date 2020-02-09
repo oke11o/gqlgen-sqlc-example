@@ -30,10 +30,6 @@ WHERE id = $1;
 SELECT * FROM authors
 ORDER BY name;
 
--- name: ListAuthorsByBookID :many
-SELECT authors.* FROM authors, book_authors
-WHERE authors.id = book_authors.author_id AND book_authors.book_id = $1;
-
 -- name: CreateAuthor :one
 INSERT INTO authors (name, website, agent_id)
 VALUES ($1, $2, $3)
@@ -57,10 +53,6 @@ WHERE id = $1;
 -- name: ListBooks :many
 SELECT * FROM books
 ORDER BY title;
-
--- name: ListBooksByAuthorID :many
-SELECT books.* FROM books, book_authors
-WHERE books.id = book_authors.book_id AND book_authors.author_id = $1;
 
 -- name: CreateBook :one
 INSERT INTO books (title, description, cover)
@@ -89,3 +81,11 @@ WHERE book_id = $1;
 -- name: ListAuthorsByAgentID :many
 SELECT authors.* FROM authors, agents
 WHERE agents.id = authors.agent_id AND authors.agent_id = $1;
+
+-- name: ListBooksByAuthorID :many
+SELECT books.* FROM books, book_authors
+WHERE books.id = book_authors.book_id AND book_authors.author_id = $1;
+
+-- name: ListAuthorsByBookID :many
+SELECT authors.* FROM authors, book_authors
+WHERE authors.id = book_authors.author_id AND book_authors.book_id = $1;

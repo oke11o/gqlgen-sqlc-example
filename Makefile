@@ -11,3 +11,9 @@ docker-up:
 
 schema-up:
 	psql "host=localhost port=${POSTGRES_PORT_EXPOSE} dbname=${POSTGRES_DB} user=${POSTGRES_USER} password=${POSTGRES_PASSWORD}" -a -f schema.sql
+
+sqlc-gen:
+	sqlc generate
+
+gqlgen-init:
+	gqlgen
