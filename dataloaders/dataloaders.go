@@ -1,5 +1,7 @@
 package dataloaders
 
+//go:generate go run github.com/vektah/dataloaden AgentLoader int64 *github.com/oke11o/gqlgen-sqlc-example/pg.Agent
+
 import (
 	"context"
 

@@ -17,3 +17,6 @@ sqlc-gen:
 
 gqlgen-init:
 	gqlgen
+
+go-gen:
+	go generate ./...
