@@ -12,10 +12,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/oke11o/gqlgen-sqlc-example/pg"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
-
-	"github.com/oke11o/gqlgen-sqlc-example/pg"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -523,7 +522,8 @@ input BookInput {
   description: String!
   cover: String!
   authorIDs: [ID!]!
-}`},
+}
+`},
 )
 
 // endregion ************************** generated!.gotpl **************************
