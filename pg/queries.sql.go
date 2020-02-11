@@ -371,6 +371,48 @@ func (q *Queries) ListAuthorsByBookID(ctx context.Context, bookID int64) ([]Auth
 	return items, nil
 }
 
+const listAuthorsByBookIDs = `-- name: ListAuthorsByBookIDs :many
+SELECT authors.id, authors.name, authors.website, authors.agent_id, book_authors.book_id FROM authors, book_authors
+WHERE book_authors.author_id = authors.id AND book_authors.book_id = ANY($1::bigint[])
+`
+
+type ListAuthorsByBookIDsRow struct {
+	ID      int64
+	Name    string
+	Website sql.NullString
+	AgentID int64
+	BookID  int64
+}
+
+func (q *Queries) ListAuthorsByBookIDs(ctx context.Context, dollar_1 []int64) ([]ListAuthorsByBookIDsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAuthorsByBookIDs, pq.Array(dollar_1))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAuthorsByBookIDsRow
+	for rows.Next() {
+		var i ListAuthorsByBookIDsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Website,
+			&i.AgentID,
+			&i.BookID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listBooks = `-- name: ListBooks :many
 SELECT id, title, description, cover FROM books
 ORDER BY title

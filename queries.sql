@@ -97,3 +97,7 @@ WHERE agents.id = authors.agent_id AND authors.id  = ANY($1::bigint[]);
 -- name: ListAuthorsByAgentIDs :many
 SELECT authors.* FROM authors, agents
 WHERE authors.agent_id = agents.id AND agents.id = ANY($1::bigint[]);
+
+-- name: ListAuthorsByBookIDs :many
+SELECT authors.*, book_authors.book_id FROM authors, book_authors
+WHERE book_authors.author_id = authors.id AND book_authors.book_id = ANY($1::bigint[]);
