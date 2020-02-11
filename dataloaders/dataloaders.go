@@ -24,7 +24,8 @@ type Loaders struct {
 func newLoaders(ctx context.Context, repo pg.Repository) *Loaders {
 	return &Loaders{
 		// individual loaders will be initialized here
-		AgentByAuthorID: newAgentByAuthorID(ctx, repo),
+		AgentByAuthorID:  newAgentByAuthorID(ctx, repo),
+		AuthorsByAgentID: newAuthorsByAgentID(ctx, repo),
 	}
 }
 
@@ -69,6 +70,31 @@ func newAgentByAuthorID(ctx context.Context, repo pg.Repository) *AgentLoader {
 			result := make([]*pg.Agent, len(authorIDs))
 			for i, authorID := range authorIDs {
 				result[i] = groupByAuthorID[authorID]
+			}
+			return result, nil
+		},
+	})
+}
+
+func newAuthorsByAgentID(ctx context.Context, repo pg.Repository) *AuthorSliceLoader {
+	return NewAuthorSliceLoader(AuthorSliceLoaderConfig{
+		MaxBatch: 100,
+		Wait:     5 * time.Millisecond,
+		Fetch: func(agentIDs []int64) ([][]pg.Author, []error) {
+			// db query
+			res, err := repo.ListAuthorsByAgentIDs(ctx, agentIDs)
+			if err != nil {
+				return nil, []error{err}
+			}
+			// group
+			groupByAgentID := make(map[int64][]pg.Author, len(agentIDs))
+			for _, r := range res {
+				groupByAgentID[r.AgentID] = append(groupByAgentID[r.AgentID], r)
+			}
+			// order
+			result := make([][]pg.Author, len(agentIDs))
+			for i, agentID := range agentIDs {
+				result[i] = groupByAgentID[agentID]
 			}
 			return result, nil
 		},
