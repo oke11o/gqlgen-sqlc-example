@@ -1,6 +1,7 @@
 package dataloaders
 
 //go:generate go run github.com/vektah/dataloaden AgentLoader int64 *github.com/oke11o/gqlgen-sqlc-example/pg.Agent
+//go:generate go run github.com/vektah/dataloaden AuthorSliceLoader int64 []github.com/oke11o/gqlgen-sqlc-example/pg.Author
 
 import (
 	"context"
@@ -16,7 +17,8 @@ const key = contextKey("dataloaders")
 // Loaders holds references to the individual dataloaders.
 type Loaders struct {
 	// individual loaders will be defined here
-	AgentByAuthorID *AgentLoader
+	AgentByAuthorID  *AgentLoader
+	AuthorsByAgentID *AuthorSliceLoader
 }
 
 func newLoaders(ctx context.Context, repo pg.Repository) *Loaders {
